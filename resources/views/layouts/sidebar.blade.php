@@ -72,6 +72,12 @@
                                 <p>Stock Monitor</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('stock-in') }}" class="nav-link">
+                                <i class="fas fa-people-carry-box nav-icon"></i>
+                                <p>Stock IN</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item menu-close">

@@ -14,6 +14,12 @@ class CategoryItem extends Model
         'name'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
     public function items()
     {
         return $this->hasMany(Item::class);

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryItemController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockMonitorController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
@@ -31,6 +32,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     // warehouse start
     Route::get('/stock-monitor', [StockMonitorController::class, 'index'])->name('stock-monitor');
+
+    Route::get('/stock-in', [StockInController::class, 'index'])->name('stock-in');
+    Route::get('/stock-in/create', [StockInController::class, 'create'])->name('stock-in.create');
+    Route::post('/stock-in/store', [StockInController::class, 'store'])->name('stock-in.store');
+    Route::post('/stock-in/store_temp', [StockInController::class, 'store_temp'])->name('stock-in.store_temp');
+    Route::get('/stock-in/get_temp_item', [StockInController::class, 'get_temp_item'])->name('stock-in.get_temp_item');
+    Route::post('/stock-in/delete_temp_item', [StockInController::class, 'delete_temp_item'])->name('stock-in.delete_temp_item');
     // warehouse end
 
     // Configuration start

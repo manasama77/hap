@@ -16,7 +16,7 @@ class ItemSeeder extends Seeder
         Item::create([
             'category_item_id' => 1,
             'name'             => 'Kabel 250m',
-            'unit'             => 'm',
+            'unit'             => 'pcs',
             'qty'              => 0,
             'photo'            => null,
             'has_sn'           => 0,

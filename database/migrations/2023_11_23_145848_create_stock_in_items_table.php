@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('stock_in_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(StockIn::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(StockIn::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Item::class)->constrained()->cascadeOnDelete();
             $table->integer('qty');
+            $table->string('temp_code')->nullable();
             $table->timestamps();
         });
     }

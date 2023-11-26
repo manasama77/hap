@@ -13,6 +13,12 @@ class StockInItem extends Model
         'stock_in_id',
         'item_id',
         'qty',
+        'temp_code',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 
     public function stockIn()

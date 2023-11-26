@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('date_in');
             $table->string('po_number_vendor');
             $table->string('attachment')->nullable();
+            $table->integer('seq')->default(1);
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();
