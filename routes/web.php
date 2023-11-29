@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockMonitorController;
+use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilityController;
@@ -39,6 +40,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/stock-in/store_temp', [StockInController::class, 'store_temp'])->name('stock-in.store_temp');
     Route::get('/stock-in/get_temp_item', [StockInController::class, 'get_temp_item'])->name('stock-in.get_temp_item');
     Route::post('/stock-in/delete_temp_item', [StockInController::class, 'delete_temp_item'])->name('stock-in.delete_temp_item');
+
+    Route::get('/stock-out', [StockOutController::class, 'index'])->name('stock-out');
+    Route::get('/stock-out/create', [StockOutController::class, 'create'])->name('stock-out.create');
+    Route::post('/stock-out/store', [StockOutController::class, 'store'])->name('stock-out.store');
+    Route::post('/stock-out/store_temp', [StockOutController::class, 'store_temp'])->name('stock-out.store_temp');
+    Route::get('/stock-out/get_temp_item', [StockOutController::class, 'get_temp_item'])->name('stock-out.get_temp_item');
+    Route::post('/stock-out/delete_temp_item', [StockOutController::class, 'delete_temp_item'])->name('stock-out.delete_temp_item');
+    Route::post('/stock-out/destroy/{id}', [StockOutController::class, 'destroy'])->name('stock-out.destroy');
     // warehouse end
 
     // Configuration start

@@ -145,9 +145,15 @@ class StockInController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $exec = StockIn::find($id);
+        $exec->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock IN has beed deleted'
+        ]);
     }
 
     public function store_temp(Request $request)
