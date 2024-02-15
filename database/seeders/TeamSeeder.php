@@ -14,15 +14,18 @@ class TeamSeeder extends Seeder
     public function run(): void
     {
         Team::create([
-            'name' => 'Team 1',
+            'name'      => 'Team 1',
+            'is_active' => 1,
         ]);
 
         Team::create([
-            'name' => 'Team 2',
+            'name'      => 'Team 2',
+            'is_active' => 1,
         ]);
 
         Team::create([
-            'name' => 'Team 3',
+            'name'      => 'Team 3',
+            'is_active' => 1,
         ]);
     }
 }

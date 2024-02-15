@@ -17,7 +17,6 @@ class StockIn extends Model
         'date_in',
         'po_number_vendor',
         'attachment',
-        'seq',
         'created_by',
         'updated_by',
         'deleted_by',

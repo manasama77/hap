@@ -71,12 +71,12 @@
                                             <div class="form-group" id="group_item">
                                                 <div class="d-flex justify-content-between">
                                                     <label for="item_id">Item</label>
-                                                    <a href="" class="btn btn-link">
+                                                    <a href="{{ route('item') }}" class="btn btn-link">
                                                         Item not on the list <i class="far fa-question-circle fa-beat"></i>
                                                     </a>
                                                 </div>
                                                 <select class="form-control" id="item_id" name="item_id">
-                                                    <option value="">-- Choose Item --</option>
+                                                    <option value=""></option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -88,6 +88,16 @@
                                                         <span class="input-group-text" id="unit_text">-</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sn">SN</label>
+                                                <input type="text" class="form-control" id="sn" name="sn"
+                                                    disabled />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mac">Mac Address</label>
+                                                <input type="text" class="form-control" id="mac" name="mac"
+                                                    disabled />
                                             </div>
                                         </div>
                                         <div class="card-footer">
@@ -114,10 +124,14 @@
                                                             </th>
                                                             <th>Item Name</th>
                                                             <th>Qty</th>
+                                                            <th>SN</th>
+                                                            <th>MAC</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -161,9 +175,23 @@
 
             $('#item_id').on('change', () => {
                 $('#unit_text').html('-')
-                if ($('#item_id').val().length) {
-                    let unit = $('#item_id option:selected').data('unit')
-                    $('#unit_text').html(unit)
+                if ($('#item_id').val().length > 0) {
+
+                    if ($('#item_id option:selected').data('has_sn') == 1) {
+                        $('#sn').prop('disabled', false)
+                        $('#mac').prop('disabled', false)
+                        $('#qty').prop('disabled', true)
+                    } else {
+                        $('#sn').prop('disabled', true)
+                        $('#mac').prop('disabled', true)
+                        $('#qty').prop('disabled', false)
+                        let unit = $('#item_id option:selected').data('unit')
+                        $('#unit_text').html(unit)
+                    }
+                } else {
+                    $('#qty').val('')
+                    $('#sn').val('')
+                    $('#mac').val('')
                 }
             })
 
@@ -172,6 +200,8 @@
 
                 let item_id = $('#item_id').val()
                 let qty = $('#qty').val()
+                let sn = $('#sn').val()
+                let mac = $('#mac').val()
 
                 if (item_id.length == 0) {
                     Swal.fire({
@@ -188,22 +218,54 @@
                     return false
                 }
 
-                if (qty.length == 0 || qty == 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'QTY cannot be empty or zero',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        toast: true,
-                        position: 'top-end'
-                    }).then(() => {
-                        $('#qty').focus().trigger('click')
-                    })
-                    return false
+                if ($('#item_id option:selected').data('has_sn') == 1) {
+                    if (sn.length == 0 || sn == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'SN cannot be empty or zero',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#sn').focus().trigger('click')
+                        })
+                        return false
+                    }
+
+                    if (mac.length == 0 || mac == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'MAC cannot be empty or zero',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#mac').focus().trigger('click')
+                        })
+                        return false
+                    }
+                } else {
+                    if (qty.length == 0 || qty == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'QTY cannot be empty or zero',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#qty').focus().trigger('click')
+                        })
+                        return false
+                    }
                 }
 
-                addTempItem(item_id, qty)
+                addTempItem(item_id, qty, sn, mac)
             })
 
             $('form').on('submit', e => {
@@ -259,14 +321,15 @@
                 res.data.forEach(item => {
                     console.log(item)
                     $('#item_id').append(
-                        `<option value="${item.id}" data-unit="${item.unit}">${item.name}</option>`)
+                        `<option value="${item.id}" data-unit="${item.unit}" data-has_sn="${item.has_sn}">${item.name}</option>`
+                    )
                 })
             }).then(() => {
                 getTempItem()
             })
         }
 
-        function addTempItem(item_id, qty) {
+        function addTempItem(item_id, qty, sn, mac) {
             $.ajax({
                 url: `{{ route('stock-in.store_temp') }}`,
                 method: 'post',
@@ -274,7 +337,9 @@
                 data: {
                     temp_id: temp_id,
                     item_id: item_id,
-                    qty: qty
+                    qty: qty,
+                    sn: sn,
+                    mac: mac,
                 },
                 beforeSend: function() {
                     $('#btn_add').block({
@@ -321,6 +386,7 @@
                     })
                 }
             }).then(() => {
+                $('#item_id').val('').trigger('change')
                 getTempItem()
             })
         }
@@ -369,6 +435,8 @@
                             </td>
                             <td>${item.item.name}</td>
                             <td>${item.qty} ${item.item.unit}</td>
+                            <td>${item.sn ?? ''}</td>
+                            <td>${item.mac ?? ''}</td>
                         </tr>`
 
                         total_item++

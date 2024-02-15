@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,9 +30,11 @@ class UserController extends Controller
     public function create()
     {
         $page_title = "Create Users";
+        $teams      = Team::where('counter', '<', 1)->orderBy('name', 'asc')->get();
 
         $data = [
             'page_title' => $page_title,
+            'teams'      => $teams,
         ];
         return view('pages.user.form', $data);
     }
@@ -53,20 +56,27 @@ class UserController extends Controller
 
         $filename = Storage::disk('public')->put('pp', $request->file('photo'));
 
+        $count_counter = Team::where('id', $request->team_id)->first();
+
+        if ($count_counter->counter < 1) {
+            $count_counter->increment('counter');
+        } else {
+            return redirect()->route('user.create')->withErrors('Team ' . $count_counter->name . ' is full. Please select another team.')->withInput();
+        }
+
         $user               = new User();
         $user->username     = $request->username;
         $user->password     = bcrypt($request->password);
-        $user->role         = $request->role;
         $user->name         = $request->name;
         $user->phone_number = $request->phone_number;
         $user->email        = $request->email;
         $user->photo        = $filename;
+        $user->role         = $request->role;
+        $user->team_id      = $request->team_id ?? null;
         $user->save();
 
         return redirect()->route('user')->with('success', 'User created successfully.');
     }
-
-
 
     /**
      * Display the specified resource.

@@ -114,6 +114,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('tipe-item') }}" class="nav-link">
+                                <i class="fas fa-tag nav-icon"></i>
+                                <p>Tipe Items</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('item') }}" class="nav-link">
                                 <i class="fas fa-clipboard-check nav-icon"></i>
                                 <p>Items</p>

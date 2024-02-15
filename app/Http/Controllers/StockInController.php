@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\ItemSn;
 use App\Models\Vendor;
 use App\Models\StockIn;
 use App\Models\StockInItem;
+use App\Models\StockInSeq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -79,9 +81,22 @@ class StockInController extends Controller
         $m            = $current_date->format('m');
         $d            = $current_date->format('d');
 
-        $last_sequence = StockIn::whereYear('created_at', $current_date->format('Y'))->whereMonth('created_at', $m)->orderBy('created_at', 'desc')->limit(1)->first();
+        $last_sequence = StockInSeq::where('date_in_seq', $current_date->format('Y-m-d'))->first();
 
-        $last_sequence = $last_sequence ? $last_sequence->seq + 1 : 1;
+        if (!$last_sequence) {
+            $lq = 1;
+            StockInSeq::create(
+                [
+                    'date_in_seq' => $current_date->format('Y-m-d'),
+                    'seq'         => 1,
+                ]
+            );
+        } else {
+            $lq = $last_sequence->seq + 1;
+            $last_sequence->increment('seq');
+        }
+
+        $last_sequence = $lq;
         $order_number  = $this->generate_order_number($y, $m, $d, $last_sequence);
 
         $exec = StockIn::create(
@@ -110,6 +125,17 @@ class StockInController extends Controller
             $x = Item::find($item->item_id);
             $x->increment('qty', $item->qty);
             $x->save();
+
+            if ($item->sn != null) {
+                ItemSn::create([
+                    'item_id'    => $item->item_id,
+                    'sn'         => $item->sn,
+                    'mac'        => $item->mac,
+                    'teknisi_id' => null,
+                    'created_by' => auth()->user()->id,
+                    'updated_by' => auth()->user()->id,
+                ]);
+            }
         }
 
         return response()->json([
@@ -165,7 +191,9 @@ class StockInController extends Controller
         StockInItem::create(
             [
                 'item_id'    => $data['item_id'],
-                'qty'        => $data['qty'],
+                'qty'        => $data['qty'] ?? 1,
+                'sn'         => $data['sn'] ?? null,
+                'mac'        => $data['mac'] ?? null,
                 'temp_code'  => $data['temp_id'],
                 'created_by' => $data['created_by'],
                 'updated_by' => $data['updated_by'],

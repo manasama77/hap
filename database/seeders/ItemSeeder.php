@@ -15,6 +15,19 @@ class ItemSeeder extends Seeder
     {
         Item::create([
             'category_item_id' => 1,
+            'tipe_item_id'     => 1,
+            'name'             => 'ZTE F660',
+            'unit'             => 'pcs',
+            'qty'              => 0,
+            'photo'            => null,
+            'has_sn'           => 1,
+            'created_by'       => 1,
+            'updated_by'       => 1,
+        ]);
+
+        Item::create([
+            'category_item_id' => 2,
+            'tipe_item_id'     => 2,
             'name'             => 'Kabel 250m',
             'unit'             => 'pcs',
             'qty'              => 0,

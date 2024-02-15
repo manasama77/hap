@@ -12,10 +12,17 @@ class Team extends Model
 
     protected $fillable = [
         'name',
+        'is_active',
+        'counter',
     ];
 
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function getIsActiveBadgeAttribute()
+    {
+        return $this->is_active ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>';
     }
 }

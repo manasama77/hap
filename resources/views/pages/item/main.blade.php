@@ -38,6 +38,7 @@
                                                     <i class="fas fa-image"></i>
                                                 </th>
                                                 <th>Category</th>
+                                                <th>Tipe</th>
                                                 <th>Item Name</th>
                                                 <th>Unit</th>
                                                 <th>Has SN?</th>
@@ -67,6 +68,9 @@
                                                     </td>
                                                     <td>
                                                         {{ $l->category_item->name }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $l->tipe_item->name }}
                                                     </td>
                                                     <td>
                                                         {{ $l->name }}
@@ -109,6 +113,17 @@
                                             <option value=""></option>
                                             @foreach ($category_items as $k)
                                                 <option @selected(old('category_item_id') == $k->id) value="{{ $k->id }}">
+                                                    {{ $k->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tipe_item_id">Tipe Item</label>
+                                        <select name="tipe_item_id" id="tipe_item_id" name="tipe_item_id"
+                                            class="form-control" required>
+                                            <option value=""></option>
+                                            @foreach ($tipe_items as $k)
+                                                <option @selected(old('tipe_item_id') == $k->id) value="{{ $k->id }}">
                                                     {{ $k->name }}</option>
                                             @endforeach
                                         </select>

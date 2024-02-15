@@ -13,7 +13,7 @@ class TeamController extends Controller
     public function index()
     {
         $page_title = "Teams";
-        $lists = Team::orderBy('id', 'desc')->get();
+        $lists      = Team::orderBy('id', 'desc')->get();
 
         $data = [
             'page_title' => $page_title,
@@ -39,7 +39,10 @@ class TeamController extends Controller
             'name' => 'required'
         ]);
 
-        Team::create($request->all());
+        Team::create([
+            'name'      => $request->name,
+            'is_active' => 1,
+        ]);
 
         return redirect()->back()->with('success', 'Team created successfully');
     }

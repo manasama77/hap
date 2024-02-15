@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\TipeItem;
 use App\Models\CategoryItem;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -15,11 +17,14 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(CategoryItem::class)->constrained();
+            $table->foreignIdFor(TipeItem::class)->constrained();
             $table->string('name');
             $table->string('unit');
             $table->integer('qty')->default(0)->unsigned();
             $table->string('photo')->nullable();
             $table->boolean('has_sn')->default(false);
+            $table->boolean('in_warehouse')->default(true);
+            $table->foreignIdFor(User::class, 'teknisi_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');

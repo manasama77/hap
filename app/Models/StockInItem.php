@@ -13,6 +13,8 @@ class StockInItem extends Model
         'stock_in_id',
         'item_id',
         'qty',
+        'sn',
+        'mac',
         'temp_code',
     ];
 

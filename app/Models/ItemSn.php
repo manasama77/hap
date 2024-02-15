@@ -14,10 +14,16 @@ class ItemSn extends Model
         'item_id',
         'sn',
         'mac',
+        'teknisi_id',
     ];
 
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function teknisi()
+    {
+        return $this->belongsTo(User::class);
     }
 }

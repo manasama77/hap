@@ -7,6 +7,7 @@ use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockMonitorController;
 use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TipeItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\VendorController;
@@ -24,8 +25,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// set default url / to login
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::group(['middleware' => 'auth'], function () {
@@ -51,11 +53,6 @@ Route::group(['middleware' => 'auth'], function () {
     // warehouse end
 
     // Configuration start
-    Route::get('/team', [TeamController::class, 'index'])->name('team');
-    Route::post('/team/store', [TeamController::class, 'store'])->name('team.store');
-    Route::post('/team/update/{id}', [TeamController::class, 'update'])->name('team.update');
-    Route::delete('/team/delete/{id}', [TeamController::class, 'delete'])->name('team.delete');
-
     Route::get('/user', [UserController::class, 'index'])->name('user');
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
@@ -63,10 +60,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/user/update/{id}', [UserController::class, 'update'])->name('user.update');
     Route::post('/user/delete/{id}', [UserController::class, 'destroy'])->name('user.delete');
 
+    Route::get('/team', [TeamController::class, 'index'])->name('team');
+    Route::post('/team/store', [TeamController::class, 'store'])->name('team.store');
+    Route::post('/team/update/{id}', [TeamController::class, 'update'])->name('team.update');
+    Route::delete('/team/delete/{id}', [TeamController::class, 'delete'])->name('team.delete');
+
     Route::get('/category-item', [CategoryItemController::class, 'index'])->name('category-item');
     Route::post('/category-item/store', [CategoryItemController::class, 'store'])->name('category-item.store');
     Route::post('/category-item/update/{id}', [CategoryItemController::class, 'update'])->name('category-item.update');
     Route::post('/category-item/delete/{id}', [CategoryItemController::class, 'destroy'])->name('category-item.delete');
+
+    Route::get('/tipe-item', [TipeItemController::class, 'index'])->name('tipe-item');
+    Route::post('/tipe-item/store', [TipeItemController::class, 'store'])->name('tipe-item.store');
+    Route::post('/tipe-item/update/{id}', [TipeItemController::class, 'update'])->name('tipe-item.update');
+    Route::post('/tipe-item/delete/{id}', [TipeItemController::class, 'destroy'])->name('tipe-item.delete');
 
     Route::get('/item', [ItemController::class, 'index'])->name('item');
     Route::post('/item/store', [ItemController::class, 'store'])->name('item.store');

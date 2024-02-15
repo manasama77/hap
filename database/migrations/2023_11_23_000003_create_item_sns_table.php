@@ -1,9 +1,10 @@
 <?php
 
 use App\Models\Item;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Item::class)->constrained()->cascadeOnDelete();
             $table->string('sn');
             $table->string('mac');
+            $table->foreignIdFor(User::class, 'teknisi_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -12,11 +12,14 @@ class Item extends Model
 
     protected $fillable = [
         'category_item_id',
+        'tipe_item_id',
         'name',
         'unit',
         'qty',
         'photo',
         'has_sn',
+        'in_warehouse',
+        'teknisi_id',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -31,6 +34,11 @@ class Item extends Model
     public function category_item()
     {
         return $this->belongsTo(CategoryItem::class);
+    }
+
+    public function tipe_item()
+    {
+        return $this->belongsTo(TipeItem::class);
     }
 
     public function stock_in_items()

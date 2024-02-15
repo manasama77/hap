@@ -35,10 +35,11 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="text-center" style="width: 350px;">
+                                                <th class="text-center">
                                                     <i class="fas fa-cogs"></i>
                                                 </th>
                                                 <th>Team Name</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -54,15 +55,18 @@
                                                                 onclick="deleteData({{ $l->id }})">
                                                                 <i class="fas fa-trash"></i> Delete
                                                             </button>
-                                                            <button type="button" class="btn btn-dark" title="Assign Users"
+                                                            {{-- <button type="button" class="btn btn-dark" title="Assign Users"
                                                                 onclick="assignModal({{ $l->id }}, '{{ $l->name }}')">
                                                                 <i class="fa-solid fa-arrows-turn-to-dots"></i>
                                                                 Assign Users
-                                                            </button>
+                                                            </button> --}}
                                                         </div>
                                                     </td>
                                                     <td>
                                                         {{ $l->name }}
+                                                    </td>
+                                                    <td>
+                                                        {!! $l->is_active_badge !!}
                                                     </td>
                                                 </tr>
                                             @endforeach
