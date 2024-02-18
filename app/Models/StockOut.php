@@ -12,10 +12,10 @@ class StockOut extends Model
 
     protected $fillable = [
         'order_number',
+        'title',
         'type',
-        'vendor_id',
         'date_out',
-        'seq',
+        'attachment',
         'created_by',
         'updated_by',
         'deleted_by',
@@ -29,17 +29,12 @@ class StockOut extends Model
 
     public function created_by_name()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
     public function updated_by_name()
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
-    }
-
-    public function vendor()
-    {
-        return $this->belongsTo(Vendor::class);
     }
 
     public function stockOutItems()

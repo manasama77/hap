@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\ItemSn;
 use App\Models\Vendor;
 use App\Models\StockOut;
+use App\Models\StockOutSeq;
 use App\Models\StockOutItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,7 +20,6 @@ class StockOutController extends Controller
     {
         $page_title = "Stock Out";
         $lists = StockOut::with([
-            'vendor',
             'stockOutItems',
             'created_by_name',
             'updated_by_name',
@@ -38,14 +39,10 @@ class StockOutController extends Controller
     {
         $temp_id    = 'Out' . rand(1, 99999999);
         $page_title = "Create Stock OUT";
-        $vendor     = Vendor::get();
-        $items      = Item::OrderBy('name', 'desc')->get();
 
         $data = [
             'page_title' => $page_title,
             'temp_id'    => $temp_id,
-            'vendor'     => $vendor,
-            'items'      => $items,
         ];
         return view('pages.stock_out.form', $data);
     }
@@ -58,7 +55,7 @@ class StockOutController extends Controller
         $request->validate(
             [
                 'temp_id'   => 'required',
-                'vendor_id' => 'required',
+                'title' => 'required',
                 'date_out'  => 'required',
             ]
         );
@@ -68,18 +65,31 @@ class StockOutController extends Controller
         $m            = $current_date->format('m');
         $d            = $current_date->format('d');
 
-        $last_sequence = StockOut::whereYear('created_at', $current_date->format('Y'))->whereMonth('created_at', $m)->orderBy('created_at', 'desc')->limit(1)->first();
+        $last_sequence = StockOutSeq::where('date_out_seq', $current_date->format('Y-m-d'))->first();
 
-        $last_sequence = $last_sequence ? $last_sequence->seq + 1 : 1;
+        if (!$last_sequence) {
+            $lq = 1;
+            StockOutSeq::create(
+                [
+                    'date_out_seq' => $current_date->format('Y-m-d'),
+                    'seq'          => 1,
+                ]
+            );
+        } else {
+            $lq = $last_sequence->seq + 1;
+            $last_sequence->increment('seq');
+        }
+
+        $last_sequence = $lq;
         $order_number  = $this->generate_order_number($y, $m, $d, $last_sequence);
 
         $exec = StockOut::create(
             [
                 'order_number' => $order_number,
-                'vendor_id'    => $request->vendor_id,
+                'title'    => $request->title,
                 'type'         => 'manual',
                 'date_out'     => $request->date_out,
-                'sequence'     => $last_sequence,
+                'attachment'   => null,
                 'created_by'   => auth()->user()->id,
                 'updated_by'   => auth()->user()->id,
             ]
@@ -97,6 +107,12 @@ class StockOutController extends Controller
             $x = Item::find($item->item_id);
             $x->decrement('qty', $item->qty);
             $x->save();
+
+            $item_sn_id = $item->item_sn_id;
+
+            if ($item->sn != null) {
+                ItemSn::where('id', $item_sn_id)->delete();
+            }
         }
 
         return response()->json([
@@ -159,7 +175,8 @@ class StockOutController extends Controller
         StockOutItem::create(
             [
                 'item_id'    => $data['item_id'],
-                'qty'        => $data['qty'],
+                'qty'        => $data['qty'] ?? 1,
+                'item_sn_id' => $data['item_sn_id'] ?? null,
                 'temp_code'  => $data['temp_id'],
                 'created_by' => $data['created_by'],
                 'updated_by' => $data['updated_by'],
@@ -177,6 +194,7 @@ class StockOutController extends Controller
         $temp_id = $request->temp_id;
         $lists = StockOutItem::with([
             'item',
+            'item_sn',
         ])->where('temp_code', $temp_id)->get();
 
         return response()->json([

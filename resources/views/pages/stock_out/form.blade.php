@@ -25,13 +25,8 @@
                                 <div class="card-body">
 
                                     <div class="form-group">
-                                        <label for="vendor_id">Vendor</label>
-                                        <select class="form-control" id="vendor_id" name="vendor_id" required>
-                                            <option value="">-- Choose Vendor --</option>
-                                            @foreach ($vendor as $v)
-                                                <option value="{{ $v->id }}">{{ $v->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" required />
                                     </div>
 
                                     <div class="form-group">
@@ -57,23 +52,26 @@
                                                     <label for="item_id">Item</label>
                                                 </div>
                                                 <select class="form-control" id="item_id" name="item_id">
-                                                    <option value="">-- Choose Item --</option>
-                                                    @foreach ($items as $item)
-                                                        <option value="{{ $item->id }}" data-unit="{{ $item->unit }}"
-                                                            data-qty="{{ $item->qty }}">
-                                                            {{ $item->name }}</option>
-                                                    @endforeach
+                                                    <option value=""></option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="qty">QTY</label>
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="qty" name="qty"
-                                                        max="0" />
+                                                        disabled />
                                                     <div class="input-group-append">
                                                         <span class="input-group-text" id="unit_text">-</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group" id="group_item_sn">
+                                                <div class="d-flex justify-content-between">
+                                                    <label for="item_sn_id">Item SN & Mac</label>
+                                                </div>
+                                                <select class="form-control" id="item_sn_id" name="item_sn_id" disabled>
+                                                    <option value=""></option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="card-footer">
@@ -100,10 +98,14 @@
                                                             </th>
                                                             <th>Item Name</th>
                                                             <th>Qty</th>
+                                                            <th>SN</th>
+                                                            <th>MAC</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                            <td></td>
+                                                            <td></td>
                                                             <td></td>
                                                             <td></td>
                                                             <td></td>
@@ -143,14 +145,25 @@
         let total_item = 0
 
         $(document).ready(() => {
+            updateItem();
+
             $('#item_id').on('change', () => {
                 $('#unit_text').html('-')
-                $('#qty').attr('max', 0)
-                if ($('#item_id').val().length) {
-                    let unit = $('#item_id option:selected').data('unit')
-                    let qty = $('#item_id option:selected').data('qty')
-                    $('#unit_text').html(unit)
-                    $('#qty').attr('max', qty)
+                if ($('#item_id').val().length > 0) {
+
+                    if ($('#item_id option:selected').data('has_sn') == 1) {
+                        $('#item_sn_id').prop('disabled', false)
+                        $('#qty').prop('disabled', true)
+                        updateItemSn($('#item_id').val())
+                    } else {
+                        $('#item_sn_id').val('').html('').prop('disabled', true)
+                        $('#qty').prop('disabled', false)
+                        let unit = $('#item_id option:selected').data('unit')
+                        $('#unit_text').html(unit)
+                    }
+                } else {
+                    $('#qty').val('').prop('disabled', true)
+                    $('#item_sn_id').val('').prop('disabled', true)
                 }
             })
 
@@ -160,6 +173,7 @@
                 let item_id = $('#item_id').val()
                 let qty = $('#qty').val()
                 let qty_max = $('#qty').attr('max')
+                let item_sn_id = $('#item_sn_id').val()
 
                 if (item_id.length == 0) {
                     Swal.fire({
@@ -176,37 +190,54 @@
                     return false
                 }
 
-                if (qty.length == 0 || qty == 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: 'QTY cannot be empty or zero',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        toast: true,
-                        position: 'top-end'
-                    }).then(() => {
-                        $('#qty').focus().trigger('click')
-                    })
-                    return false
+                if ($('#item_id option:selected').data('has_sn') == 1) {
+                    if (item_sn_id.length == 0 || item_sn_id == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'Item SN & Mac cannot be empty',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#item_sn_id').focus().trigger('click')
+                        })
+                        return false
+                    }
+                } else {
+                    if (qty.length == 0 || qty == 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'QTY cannot be empty or zero',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#qty').focus().trigger('click')
+                        })
+                        return false
+                    }
+
+                    if (qty > qty_max) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: `Maximum QTY ${qty_max}`,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        }).then(() => {
+                            $('#qty').focus().trigger('click')
+                        })
+                        return false
+                    }
                 }
 
-                if (qty > qty_max) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Oops...',
-                        text: `Maximum QTY ${qty_max}`,
-                        showConfirmButton: false,
-                        timer: 1500,
-                        toast: true,
-                        position: 'top-end'
-                    }).then(() => {
-                        $('#qty').focus().trigger('click')
-                    })
-                    return false
-                }
-
-                addTempItem(item_id, qty)
+                addTempItem(item_id, qty, item_sn_id)
             })
 
             $('form').on('submit', e => {
@@ -230,7 +261,7 @@
             })
         })
 
-        function addTempItem(item_id, qty) {
+        function addTempItem(item_id, qty, item_sn_id) {
             $.ajax({
                 url: `{{ route('stock-out.store_temp') }}`,
                 method: 'post',
@@ -238,7 +269,8 @@
                 data: {
                     temp_id: temp_id,
                     item_id: item_id,
-                    qty: qty
+                    qty: qty,
+                    item_sn_id: item_sn_id,
                 },
                 beforeSend: function() {
                     $('#btn_add').block({
@@ -275,7 +307,7 @@
                     }).then(() => {
                         $('#item_id').val('')
                         $('#qty').val('')
-                        // updateItem()
+                        updateItem()
                     })
                 } else {
                     Swal.fire({
@@ -285,6 +317,7 @@
                     })
                 }
             }).then(() => {
+                $('#item_id').val('').trigger('change')
                 getTempItem()
             })
         }
@@ -333,6 +366,8 @@
                             </td>
                             <td>${item.item.name}</td>
                             <td>${item.qty} ${item.item.unit}</td>
+                            <td>${item.item_sn ? item.item_sn.sn : ''}</td>
+                            <td>${item.item_sn ? item.item_sn.mac : ''}</td>
                         </tr>`
 
                         total_item++
@@ -389,7 +424,7 @@
                         toast: true,
                         position: 'top-end'
                     }).then(() => {
-                        // updateItem()
+                        updateItem()
                     })
                 } else {
                     Swal.fire({
@@ -410,7 +445,7 @@
                 dataType: 'json',
                 data: {
                     temp_id: temp_id,
-                    vendor_id: $('#vendor_id').val(),
+                    title: $('#title').val(),
                     date_out: $('#date_out').val()
                 },
                 beforeSend: function() {
@@ -457,6 +492,90 @@
                         text: res.message
                     })
                 }
+            })
+        }
+
+        function updateItem() {
+            $.ajax({
+                url: `{{ route('get_list_item') }}`,
+                method: 'get',
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#item_id').html('<option value=""></option>')
+                    $('#group_item').block({
+                        message: '<i class="fas fa-spinner fa-spin"></i>',
+                        css: {
+                            border: 'none',
+                            backgroundColor: 'transparent'
+                        },
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0.5
+                        }
+                    })
+                }
+            }).fail(e => {
+                console.log(e)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: e.responseText
+                })
+            }).done(res => {
+                $('#group_item').unblock()
+                console.log(res)
+                res.data.forEach(item => {
+                    console.log(item)
+                    $('#item_id').append(
+                        `<option value="${item.id}" data-unit="${item.unit}" data-has_sn="${item.has_sn}">${item.name}</option>`
+                    )
+                })
+            }).then(() => {
+                getTempItem()
+            })
+        }
+
+        function updateItemSn(item_id) {
+            $.ajax({
+                url: `{{ route('get_list_item_sn') }}`,
+                method: 'get',
+                dataType: 'json',
+                data: {
+                    item_id: item_id,
+                    temp_id: temp_id
+                },
+                beforeSend: function() {
+                    $('#item_sn_id').html('<option value=""></option>')
+                    $('#group_item_sn').block({
+                        message: '<i class="fas fa-spinner fa-spin"></i>',
+                        css: {
+                            border: 'none',
+                            backgroundColor: 'transparent'
+                        },
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0.5
+                        }
+                    })
+                }
+            }).fail(e => {
+                console.log(e)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: e.responseText
+                })
+            }).done(res => {
+                $('#group_item_sn').unblock()
+                console.log(res)
+                res.data.forEach(item => {
+                    console.log(item)
+                    $('#item_sn_id').append(
+                        `<option value="${item.id}">${item.sn} - ${item.mac}</option>`
+                    )
+                })
+            }).then(() => {
+                getTempItem()
             })
         }
     </script>

@@ -46,6 +46,16 @@ class Item extends Model
         return $this->hasMany(StockInItem::class);
     }
 
+    public function stock_out_items()
+    {
+        return $this->hasMany(StockOutItem::class);
+    }
+
+    public function item_sn()
+    {
+        return $this->hasMany(ItemSn::class);
+    }
+
     public function created_by_name()
     {
         return $this->belongsTo(User::class);

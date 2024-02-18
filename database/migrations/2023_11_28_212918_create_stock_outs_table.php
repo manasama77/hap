@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('stock_outs', function (Blueprint $table) {
             $table->id();
             $table->string('order_number');
+            $table->string('title');
             $table->enum('type', ['manual', 'ftth']);
-            $table->foreignIdFor(Vendor::class)->nullable()->constrained()->cascadeOnDelete();
             $table->date('date_out');
-            $table->integer('seq')->default(1);
+            $table->string('attachment')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('created_by')->nullable()->constrained('users')->cascadeOnDelete();

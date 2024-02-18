@@ -29,14 +29,17 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="text-center">
+                                                {{-- <th class="text-center">
                                                     <i class="fas fa-cog"></i>
-                                                </th>
+                                                </th> --}}
                                                 <th class="text-center">No Order</th>
+                                                <th>Title</th>
                                                 <th>Type</th>
                                                 <th>Date OUT</th>
-                                                <th>Vendor / WO</th>
                                                 <th>List Item</th>
+                                                {{-- <th class="text-center">
+                                                    <i class="fas fa-image"></i>
+                                                </th> --}}
                                                 <th>Updated</th>
                                                 <th>Created</th>
                                             </tr>
@@ -44,23 +47,23 @@
                                         <tbody>
                                             @foreach ($lists as $l)
                                                 <tr>
-                                                    <td class="text-center">
+                                                    {{-- <td class="text-center">
                                                         <button type="button" class="btn btn-danger"
                                                             onclick="askDelete({{ $l->id }})">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
-                                                    </td>
+                                                    </td> --}}
                                                     <td>
                                                         {{ $l->order_number }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $l->title }}
                                                     </td>
                                                     <td>
                                                         {{ $l->type }}
                                                     </td>
                                                     <td>
                                                         {{ $l->date_out }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $l->vendor->name ?? '' }}
                                                     </td>
                                                     <td>
                                                         <ul>

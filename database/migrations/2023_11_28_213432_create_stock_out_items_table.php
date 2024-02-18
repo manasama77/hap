@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(StockOut::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Item::class)->constrained()->cascadeOnDelete();
             $table->integer('qty');
+            $table->foreignId('item_sn_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('temp_code')->nullable();
             $table->timestamps();
         });

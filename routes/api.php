@@ -26,3 +26,4 @@ Route::group(['prefix' => 'dashboard'], function () {
 });
 
 Route::get('/get_list_item', [UtilController::class, 'get_list_item'])->name('get_list_item');
+Route::get('/get_list_item_sn', [UtilController::class, 'get_list_item_sn'])->name('get_list_item_sn');

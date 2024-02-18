@@ -13,6 +13,7 @@ class StockOutItem extends Model
         'stock_out_id',
         'item_id',
         'qty',
+        'item_sn_id',
         'temp_code',
     ];
 
@@ -29,5 +30,10 @@ class StockOutItem extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function item_sn()
+    {
+        return $this->belongsTo(ItemSn::class);
     }
 }
