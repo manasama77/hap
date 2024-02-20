@@ -59,6 +59,29 @@
                 </li>
                 <li class="nav-item menu-close">
                     <a href="#" class="nav-link">
+                        <i class="nav-icon fa-solid fa-file-circle-question"></i>
+                        <p>
+                            Item Request
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('item-request') }}" class="nav-link">
+                                <i class="nav-icon fa-solid fa-table"></i>
+                                <p>List Item Request</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('item-request.create') }}" class="nav-link">
+                                <i class="nav-icon fa-solid fa-plus"></i>
+                                <p>Tambah Item Request</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item menu-close">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-warehouse"></i>
                         <p>
                             Warehouse

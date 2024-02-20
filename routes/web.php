@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\CategoryItemController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\StockInController;
-use App\Http\Controllers\StockMonitorController;
-use App\Http\Controllers\StockOutController;
-use App\Http\Controllers\TeamController;
-use App\Http\Controllers\TipeItemController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UtilityController;
-use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendorController;
+use App\Http\Controllers\StockInController;
+use App\Http\Controllers\UtilityController;
+use App\Http\Controllers\StockOutController;
+use App\Http\Controllers\TipeItemController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ItemRequestController;
+use App\Http\Controllers\CategoryItemController;
+use App\Http\Controllers\StockMonitorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,16 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/item-request', [ItemRequestController::class, 'index'])->name('item-request');
+    Route::get('/item-request/create', [ItemRequestController::class, 'create'])->name('item-request.create');
+    Route::post('/item-request/store', [ItemRequestController::class, 'store'])->name('item-request.store');
+    Route::post('/item-request/store_temp', [ItemRequestController::class, 'store_temp'])->name('item-request.store_temp');
+    Route::get('/item-request/get_temp_item', [ItemRequestController::class, 'get_temp_item'])->name('item-request.get_temp_item');
+    Route::post('/item-request/update/{id}', [ItemRequestController::class, 'update'])->name('item-request.update');
+    Route::post('/item-request/delete/{id}', [ItemRequestController::class, 'destroy'])->name('item-request.delete');
+
+
 
     // warehouse start
     Route::get('/stock-monitor', [StockMonitorController::class, 'index'])->name('stock-monitor');
