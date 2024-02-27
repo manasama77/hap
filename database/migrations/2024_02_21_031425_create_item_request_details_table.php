@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('qty');
             $table->integer('qty_approved')->default(0);
             $table->string('temp_code')->nullable();
+            $table->integer('loan_item_id')->nullable();
             $table->timestamps();
         });
     }

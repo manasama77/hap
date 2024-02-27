@@ -61,7 +61,7 @@
                                                     <td>
                                                         {{ $l->updated_at->diffForHumans() }}<br />
                                                         <span class="font-italic font-bold">
-                                                            <small>{{ $l->updated_by_name->name }}</small>
+                                                            <small>{{ $l->updated_by_name->name ?? '' }}</small>
                                                         </span>
                                                     </td>
                                                 </tr>

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('has_sn')->default(false);
             $table->boolean('in_warehouse')->default(true);
             $table->foreignIdFor(User::class, 'teknisi_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');

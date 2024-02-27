@@ -82,6 +82,29 @@
                 </li>
                 <li class="nav-item menu-close">
                     <a href="#" class="nav-link">
+                        <i class="nav-icon fa-solid fa-file-circle-question"></i>
+                        <p>
+                            Request Approval
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('item-approval-pending') }}" class="nav-link">
+                                <i class="nav-icon fa-solid fa-table"></i>
+                                <p>List Request </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('item-approval-approved') }}" class="nav-link">
+                                <i class="nav-icon fa-solid fa-table"></i>
+                                <p>List Approved</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item menu-close">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-warehouse"></i>
                         <p>
                             Warehouse

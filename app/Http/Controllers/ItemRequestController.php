@@ -34,18 +34,8 @@ class ItemRequestController extends Controller
      */
     public function create()
     {
-        $page_title      = "Create Item Request";
-        // $item_collection = collect();
-
-        // $items = Item::orderBy('name', 'asc')->where('qty', '>', '0')->query();
-
-        // if (auth()->user->role == 'gudang' || auth()->user->role == 'admin') {
-        //     $items->where('in_warehouse', 1);
-        // } else {
-        //     $items->where('teknisi_id', auth()->user->id);
-        // }
-
-        $temp_id = 'IN' . rand(1, 99999999);
+        $page_title = "Create Item Request";
+        $temp_id    = 'IN' . rand(1, 99999999);
 
         $data = [
             'page_title' => $page_title,

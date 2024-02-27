@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreignIdFor(Item::class)->constrained()->cascadeOnDelete();
             $table->string('sn');
             $table->string('mac');
+            $table->enum('status', ['warehouse', 'reserve', 'out']);
             $table->foreignIdFor(User::class, 'teknisi_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

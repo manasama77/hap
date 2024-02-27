@@ -36,7 +36,7 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="text-center" style="width: 350px;">
+                                                <th class="text-center">
                                                     <i class="fas fa-cogs"></i>
                                                 </th>
                                                 <th>Code</th>
@@ -51,16 +51,18 @@
                                             @foreach ($lists as $l)
                                                 <tr>
                                                     <td class="text-center">
-                                                        <div class="btn-group">
-                                                            <button type="button" class="btn btn-info"
-                                                                onclick="editData({{ $l->id }})">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger"
-                                                                onclick="deleteData({{ $l->id }})">
-                                                                <i class="fas fa-trash"></i> Delete
-                                                            </button>
-                                                        </div>
+                                                        @if ($l->status == 'pending')
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-info"
+                                                                    onclick="editData({{ $l->id }})">
+                                                                    <i class="fas fa-edit"></i> Edit
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger"
+                                                                    onclick="deleteData({{ $l->id }})">
+                                                                    <i class="fas fa-trash"></i> Delete
+                                                                </button>
+                                                            </div>
+                                                        @endif
                                                     </td>
                                                     <td>{{ $l->code }}</td>
                                                     <td>{{ $l->date_request }}</td>

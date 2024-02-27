@@ -15,6 +15,8 @@ class ItemSn extends Model
         'sn',
         'mac',
         'teknisi_id',
+        'status',
+        'parent_id',
     ];
 
     public function item()

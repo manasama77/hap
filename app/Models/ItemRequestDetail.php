@@ -15,7 +15,8 @@ class ItemRequestDetail extends Model
         'item_sn_id',
         'qty',
         'qty_approved',
-        'temp_code'
+        'temp_code',
+        'loan_item_id',
     ];
 
     public function itemRequest()

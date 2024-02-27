@@ -28,3 +28,4 @@ Route::group(['prefix' => 'dashboard'], function () {
 Route::get('/get_list_item', [UtilController::class, 'get_list_item'])->name('get_list_item');
 Route::get('/get_list_item_sn', [UtilController::class, 'get_list_item_sn'])->name('get_list_item_sn');
 Route::get('/get_list_item_sn_for_item_request', [UtilController::class, 'get_list_item_sn_for_item_request'])->name('get_list_item_sn_for_item_request');
+Route::get('/get_list_item_request_detail', [UtilController::class, 'get_list_item_request_detail'])->name('get_list_item_request_detail');

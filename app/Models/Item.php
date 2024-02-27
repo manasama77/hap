@@ -20,6 +20,7 @@ class Item extends Model
         'has_sn',
         'in_warehouse',
         'teknisi_id',
+        'parent_id',
         'created_by',
         'updated_by',
         'deleted_by',

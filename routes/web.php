@@ -13,6 +13,7 @@ use App\Http\Controllers\TipeItemController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemRequestController;
 use App\Http\Controllers\CategoryItemController;
+use App\Http\Controllers\ItemApprovalController;
 use App\Http\Controllers\StockMonitorController;
 
 /*
@@ -41,6 +42,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/item-request/get_temp_item', [ItemRequestController::class, 'get_temp_item'])->name('item-request.get_temp_item');
     Route::post('/item-request/update/{id}', [ItemRequestController::class, 'update'])->name('item-request.update');
     Route::post('/item-request/delete/{id}', [ItemRequestController::class, 'destroy'])->name('item-request.delete');
+
+    Route::get('/item-approval-pending', [ItemApprovalController::class, 'index'])->name('item-approval-pending');
+    Route::post('/item-approval-pending/store', [ItemApprovalController::class, 'store'])->name('item-approval-pending.store');
+
+    Route::get('/item-approval-approved', [ItemApprovalController::class, 'index_approved'])->name('item-approval-approved');
 
 
 

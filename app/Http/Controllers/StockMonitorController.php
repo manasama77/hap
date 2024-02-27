@@ -10,12 +10,15 @@ class StockMonitorController extends Controller
     public function index()
     {
         $page_title = "Stock Monitors";
-        $lists = Item::with([
-            'category_item',
-            'updated_by_name',
-        ])->orderBy('id', 'desc')->get();
+        $lists = Item::orderBy('id', 'desc');
 
-        // dd($lists);
+        if (auth()->user()->role == 'teknisi') {
+            $lists->where('teknisi_id', auth()->user()->id);
+        } else {
+            $lists->where('in_warehouse', 1);
+        }
+
+        $lists = $lists->get();
 
         $data = [
             'page_title' => $page_title,
