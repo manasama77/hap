@@ -15,10 +15,13 @@ class UtilController extends Controller
     {
         $item = Item::with([
             'category_item',
-        ])->get();
+        ])->where('in_warehouse', 1);
+
+        $sql = $item->toRawSql();
 
         return response()->json([
-            'data' => $item
+            'data' => $item->get(),
+            'sql'  => $sql,
         ]);
     }
 
@@ -39,9 +42,9 @@ class UtilController extends Controller
     {
         $temp_id = $request->temp_id;
 
-        $temp_item = ItemRequestDetail::select('item_id')->where('temp_code', $temp_id)->get()->toArray();
+        $temp_item = ItemRequestDetail::select('item_sn_id')->where('temp_code', $temp_id)->get()->toArray();
 
-        $item = ItemSn::where('item_id', $request->item_id)->whereNull('teknisi_id');
+        $item = ItemSn::where('item_id', $request->item_id)->whereNull('teknisi_id')->where('status', 'warehouse');
 
         if (count($temp_item) > 0) {
             $item->whereNotIn('id', $temp_item);
@@ -70,28 +73,30 @@ class UtilController extends Controller
             $date_request = $items->date_request;
             $note         = $items->note;
 
-            $item_lists = ItemRequestDetail::where('item_request_id', $request->id)->get();
 
             $data = [
-                'id'         => $id,
+                'id'           => $id,
                 'code'         => $code,
                 'date_request' => $date_request,
                 'note'         => $note,
-                'lists'         => [],
+                'lists'        => [],
             ];
 
+            $item_lists = ItemRequestDetail::with('item')->where('item_request_id', $request->id)->get();
             foreach ($item_lists as $i) {
                 $item_request_detail_id = $i->id;
                 $code                   = $i->code;
                 $item_id                = $i->item_id;
                 $item_sn_id             = $i->item_sn_id;
                 $qty                    = $i->qty;
+                $unit                   = $i->item->unit;
 
                 $item_request_detail_id = $item_request_detail_id;
                 $item_id                = $item_id;
                 $item_sn_id             = $item_sn_id;
                 $item_name              = "";
                 $qty                    = $qty;
+                $unit                   = $unit;
                 $sn                     = null;
                 $mac                    = null;
 
@@ -111,6 +116,7 @@ class UtilController extends Controller
                 $nested['item_sn_id']             = $item_sn_id;
                 $nested['item_name']              = $item_name;
                 $nested['qty']                    = $qty;
+                $nested['unit']                   = $unit;
                 $nested['sn']                     = $sn;
                 $nested['mac']                    = $mac;
 

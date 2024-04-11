@@ -51,6 +51,7 @@ class ItemController extends Controller
     {
         $request->validate([
             'category_item_id' => 'required',
+            'tipe_item_id'     => 'required',
             'name'             => 'required',
             'unit'             => 'required',
             'photo'            => 'nullable',
@@ -65,15 +66,18 @@ class ItemController extends Controller
 
             Item::create([
                 'category_item_id' => $request->category_item_id,
+                'tipe_item_id'     => $request->tipe_item_id,
                 'name'             => $request->name,
                 'unit'             => $request->unit,
+                'qty'              => 0,
                 'photo'            => $photo,
                 'has_sn'           => $request->has_sn ? 1 : 0,
+                'in_warehouse'     => 1,
             ]);
 
             return redirect()->route('item')->with('success', 'Item created successfully');
         } catch (Exception $e) {
-            return redirect()->route('item')->with('error', 'Item created failed');
+            return redirect()->route('item')->with('error', 'Item created failed')->withErrors($e->getMessage())->withInput();
         }
     }
 
@@ -106,6 +110,8 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Item::find($id)->delete();
+
+        return response()->json(['success' => true]);
     }
 }

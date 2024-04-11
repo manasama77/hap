@@ -53,10 +53,10 @@
                                                     <td class="text-center">
                                                         @if ($l->status == 'pending')
                                                             <div class="btn-group">
-                                                                <button type="button" class="btn btn-info"
-                                                                    onclick="editData({{ $l->id }})">
+                                                                <a href="{{ route('item-request.edit', $l->id) }}"
+                                                                    class="btn btn-info">
                                                                     <i class="fas fa-edit"></i> Edit
-                                                                </button>
+                                                                </a>
                                                                 <button type="button" class="btn btn-danger"
                                                                     onclick="deleteData({{ $l->id }})">
                                                                     <i class="fas fa-trash"></i> Delete

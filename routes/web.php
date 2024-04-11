@@ -40,6 +40,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/item-request/store', [ItemRequestController::class, 'store'])->name('item-request.store');
     Route::post('/item-request/store_temp', [ItemRequestController::class, 'store_temp'])->name('item-request.store_temp');
     Route::get('/item-request/get_temp_item', [ItemRequestController::class, 'get_temp_item'])->name('item-request.get_temp_item');
+    Route::get('/item-request/get_temp_item_edit', [ItemRequestController::class, 'get_temp_item_edit'])->name('item-request.get_temp_item_edit');
+    Route::get('/item-request/edit/{id}', [ItemRequestController::class, 'edit'])->name('item-request.edit');
     Route::post('/item-request/update/{id}', [ItemRequestController::class, 'update'])->name('item-request.update');
     Route::post('/item-request/delete/{id}', [ItemRequestController::class, 'destroy'])->name('item-request.delete');
 

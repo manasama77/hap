@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ItemRequestDetail;
 use App\Models\ItemRequestSeq;
+use App\Models\ItemSn;
 
 class ItemRequestController extends Controller
 {
@@ -35,7 +36,8 @@ class ItemRequestController extends Controller
     public function create()
     {
         $page_title = "Create Item Request";
-        $temp_id    = 'IN' . rand(1, 99999999);
+        $temp_id    = auth()->user()->id;
+        ItemRequestDetail::where('temp_code', $temp_id)->delete();
 
         $data = [
             'page_title' => $page_title,
@@ -62,8 +64,8 @@ class ItemRequestController extends Controller
         $m            = $current_date->format('m');
         $d            = $current_date->format('d');
 
+        // generate last sequence
         $last_sequence = ItemRequestSeq::where('date_request', $current_date->format('Y-m-d'))->first();
-
         if (!$last_sequence) {
             $lq = 1;
             ItemRequestSeq::create(
@@ -82,14 +84,14 @@ class ItemRequestController extends Controller
 
         $exec = ItemRequest::create(
             [
-                'code' => $order_number,
-                'date_request' => $current_date,
-                'approval_by' => null,
+                'code'          => $order_number,
+                'date_request'  => $request->date_request,
+                'approval_by'   => null,
                 'date_approval' => null,
-                'status' => 'pending',
-                'note' => $request->note,
-                'created_by' => auth()->user()->id,
-                'updated_by' => auth()->user()->id,
+                'status'        => 'pending',
+                'note'          => $request->note,
+                'created_by'    => auth()->user()->id,
+                'updated_by'    => auth()->user()->id,
             ]
         );
 
@@ -100,7 +102,17 @@ class ItemRequestController extends Controller
             ]
         );
 
-        $items_list = ItemRequestDetail::where('item_request_id', $exec->id)->get();
+        $x = ItemRequestDetail::where('item_request_id', $exec->id)->get();
+
+        foreach ($x as $z) {
+            $item_sn_id = $z->item_sn_id;
+
+            if ($item_sn_id) {
+                ItemSn::where('id', $item_sn_id)->update([
+                    'status' => 'reserve'
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -121,7 +133,22 @@ class ItemRequestController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $page_title = "Edit Item Request";
+        $temp_id    = auth()->user()->id;
+        ItemRequestDetail::where('temp_code', $temp_id)->delete();
+
+        $items = ItemRequest::with([
+            'itemRequestDetails',
+            'itemRequestDetails.item',
+            'itemRequestDetails.itemSn',
+        ])->find($id);
+
+        $data = [
+            'page_title' => $page_title,
+            'temp_id'    => $temp_id,
+            'items'      => $items,
+        ];
+        return view('pages.item_request.form_edit', $data);
     }
 
     /**
@@ -129,7 +156,48 @@ class ItemRequestController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate(
+            [
+                'temp_id'      => 'required',
+                'date_request' => 'required',
+                'note'         => 'required',
+            ]
+        );
+
+        ItemRequest::where('id', $id)->update(
+            [
+                'date_request'  => $request->date_request,
+                'approval_by'   => null,
+                'date_approval' => null,
+                'status'        => 'pending',
+                'note'          => $request->note,
+                'updated_by'    => auth()->user()->id,
+            ]
+        );
+
+        ItemRequestDetail::where('temp_code', $request->temp_id)->update(
+            [
+                'item_request_id' => $id,
+                'temp_code'       => null,
+            ]
+        );
+
+        $x = ItemRequestDetail::where('item_request_id', $id)->get();
+
+        foreach ($x as $z) {
+            $item_sn_id = $z->item_sn_id;
+
+            if ($item_sn_id) {
+                ItemSn::where('id', $item_sn_id)->update([
+                    'status' => 'reserve'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Item Request has beed updated'
+        ]);
     }
 
     /**
@@ -179,6 +247,39 @@ class ItemRequestController extends Controller
             'success' => true,
             'data'    => $lists,
             'sql'    => $sql,
+        ]);
+    }
+
+    public function get_temp_item_edit(Request $request)
+    {
+        $temp_id = $request->temp_id;
+        $lists = ItemRequestDetail::with([
+            'item',
+            'itemSn',
+        ])->where('temp_code', $temp_id);
+
+        $sql = $lists->toRawSql();
+
+        $lists = $lists->get();
+
+        $item_request_id = $request->item_request_id;
+        $list_prev = ItemRequestDetail::with([
+            'item',
+            'itemSn',
+        ])->where('item_request_id', $item_request_id);
+
+        $sql_prev = $list_prev->toRawSql();
+
+        $list_prev = $list_prev->get();
+
+        $merged_lists = $lists->merge($list_prev);
+
+
+        return response()->json([
+            'success'  => true,
+            'data'     => $merged_lists,
+            'sql'      => $sql,
+            'sql_prev' => $sql_prev,
         ]);
     }
 

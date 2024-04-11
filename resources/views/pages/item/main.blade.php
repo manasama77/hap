@@ -145,9 +145,10 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="form-check">
-                                            <input type="checkbox" name="has_sn" id="has_sn"
+                                            <input type="checkbox" name="has_sn" id="has_sn" value="1"
                                                 @checked(old('has_sn') == 1) />
-                                            <label for="has_sn" class="form-check-lable">Has Serial Number?</label>
+                                            <label for="has_sn" class="form-check-lable">Has Serial Number?
+                                                {{ old('has_sn') }}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -186,7 +187,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `{{ url('/category-item/delete/') }}${id}`,
+                        url: `/item/delete/${id}`,
                         type: "POST",
                         dataType: 'json',
                         data: {
