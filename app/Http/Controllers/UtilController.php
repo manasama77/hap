@@ -89,6 +89,7 @@ class UtilController extends Controller
                 $item_id                = $i->item_id;
                 $item_sn_id             = $i->item_sn_id;
                 $qty                    = $i->qty;
+                $qty_approved           = $i->qty_approved;
                 $unit                   = $i->item->unit;
 
                 $item_request_detail_id = $item_request_detail_id;
@@ -96,6 +97,7 @@ class UtilController extends Controller
                 $item_sn_id             = $item_sn_id;
                 $item_name              = "";
                 $qty                    = $qty;
+                $qty_approved           = $qty_approved;
                 $unit                   = $unit;
                 $sn                     = null;
                 $mac                    = null;
@@ -116,6 +118,7 @@ class UtilController extends Controller
                 $nested['item_sn_id']             = $item_sn_id;
                 $nested['item_name']              = $item_name;
                 $nested['qty']                    = $qty;
+                $nested['qty_approved']           = $qty_approved;
                 $nested['unit']                   = $unit;
                 $nested['sn']                     = $sn;
                 $nested['mac']                    = $mac;

@@ -73,89 +73,50 @@
         </div>
     </div>
 
-    <form class="form-inline">
-        <div class="modal fade" id="modal_detail" data-backdrop="static" data-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Detail</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+    <div class="modal fade" id="modal_detail" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Code Request: <span id="v_code"></span></h4>
+                    <h4>Date Request: <span id="v_date_request"></span></h4>
+                    <h4>Note: <span id="v_note"></span></h4>
+                    <hr />
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>QTY Request</th>
+                                    <th>QTY Approve</th>
+                                    <th>SN & Mac</th>
+                                    <th>MAC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="v_list"></tbody>
+                        </table>
                     </div>
-                    <div class="modal-body">
-                        <h3>Code Request: <span id="v_code"></span></h3>
-                        <h3>Date Request: <span id="v_date_request"></span></h3>
-                        <h3>Note: <span id="v_note"></span></h3>
-                        <hr />
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Item Name</th>
-                                        <th>QTY Request</th>
-                                        <th>QTY Approve</th>
-                                        <th>SN & Mac</th>
-                                        <th>MAC</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="v_list"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" id="id" name="id" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa-solid fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="id" name="id" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 @endsection
 
 @section('sanskrit')
     <script>
         let team_id = null;
 
-        $(document).ready(() => {
-            $('form').on('submit', e => {
-                e.preventDefault()
-
-                $.ajax({
-                    url: `{{ route('item-approval-pending.store') }}`,
-                    method: 'post',
-                    dataType: 'json',
-                    data: $('form').serialize(),
-                    beforeSend: function() {
-                        $.blockUI()
-                    }
-                }).fail(e => {
-                    console.log(e.responseText)
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: e.responseText,
-                    })
-                    $.unblockUI()
-                }).done(e => {
-                    console.log(e)
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Request has been approved',
-                        icon: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                        $.unblockUI()
-                    })
-                })
-            })
-        })
+        $(document).ready(() => {})
 
         function showDetail(id) {
             $.ajax({
@@ -200,18 +161,14 @@
                     let sn = k.sn
                     let mac = k.mac
                     let qty = k.qty
+                    let qty_approved = k.qty_approved
                     let readonly = item_sn_id ? 'readonly' : ''
 
                     htmlnya += `
                     <tr>
                         <td>${item_name}"</td>
                         <td>${qty}</td>
-                        <td class="text-center">
-                            <input type="number" class="form-control col-sm-12 col-md-6" name="qty_approve[]" min="0" value="${qty}" required ${readonly} />
-                            <input type="hidden" name="item_request_detail_id[]" value="${item_request_detail_id}" />
-                            <input type="hidden" name="item_id[]" value="${item_id}" />
-                            <input type="hidden" name="item_sn_id[]" value="${item_sn_id}" />
-                        </td>
+                        <td>${qty_approved}</td>
                         <td>${sn ?? ''}</td>
                         <td>${mac ?? ''}</td>
                     </tr>

@@ -92,12 +92,14 @@ class ItemApprovalController extends Controller
                     'teknisi_id'       => $created_by,
                     'parent_id'        => $item_id[$i],
                 ]);
+                $teknisi_item_id = $item_teknisi->id;
             } else {
-                $item_teknisi = Item::where('teknisi_id', $created_by)->where('parent_id', $item_id[$i])->increment('qty', $qty_approve[$i]);
+                $item_teknisi    = Item::where('teknisi_id', $created_by)->where('parent_id', $item_id[$i])->increment('qty', $qty_approve[$i]);
+                $teknisi_item_id = Item::where('teknisi_id', $created_by)->where('parent_id', $item_id[$i])->first()->id;
             }
 
-            $teknisi_item_id = $item_teknisi->id;
-            $loan_item_id    = $item_teknisi->id;
+            $teknisi_item_id = $teknisi_item_id;
+            $loan_item_id    = $teknisi_item_id;
 
             if (($item_sn_id[$i] == "null" ? null : $item_sn_id[$i]) != null) {
                 $y   = ItemSn::where('id', $item_sn_id[$i])->first();
@@ -108,8 +110,8 @@ class ItemApprovalController extends Controller
                     'item_id'    => $teknisi_item_id,
                     'sn'         => $sn,
                     'mac'        => $mac,
-                    'status'     => 'reserve',
                     'teknisi_id' => $created_by,
+                    'status'     => 'reserve',
                     'parent_id'  => $item_sn_id[$i],
                 ]);
 
@@ -120,12 +122,11 @@ class ItemApprovalController extends Controller
             Item::where('id', $item_id[$i])->decrement('qty', $qty_approve[$i]);
 
             if (($item_sn_id[$i] == "null" ? null : $item_sn_id[$i]) != null) {
-                ItemSn::where('id', $item_sn_id[$i])->update([
+                $ccd = ItemSn::where('id', $item_sn_id[$i])->update([
                     'status'     => 'out',
                     'teknisi_id' => $created_by,
                 ]);
             }
-
 
             ItemRequestDetail::where('id', $item_request_detail_id[$i])->update([
                 'qty_approved' => $qty_approve[$i],
@@ -143,7 +144,7 @@ class ItemApprovalController extends Controller
 
         return response()->json([
             'message' => 'Proses Approve Berhasil',
-        ], 500);
+        ], 200);
     }
 
     public function index_approved()
