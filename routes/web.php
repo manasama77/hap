@@ -15,6 +15,7 @@ use App\Http\Controllers\ItemRequestController;
 use App\Http\Controllers\CategoryItemController;
 use App\Http\Controllers\ItemApprovalController;
 use App\Http\Controllers\StockMonitorController;
+use App\Http\Controllers\WorkOrderInstalasiBaruController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,8 +48,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/item-approval-pending', [ItemApprovalController::class, 'index'])->name('item-approval-pending');
     Route::post('/item-approval-pending/store', [ItemApprovalController::class, 'store'])->name('item-approval-pending.store');
-
     Route::get('/item-approval-approved', [ItemApprovalController::class, 'index_approved'])->name('item-approval-approved');
+
+    Route::get('/work-order/instalasi-baru', [WorkOrderInstalasiBaruController::class, 'index'])->name('work-order.instalasi-baru');
+    Route::get('/work-order/instalasi-baru/create', [WorkOrderInstalasiBaruController::class, 'create'])->name('work-order.instalasi-baru.create');
 
 
 
